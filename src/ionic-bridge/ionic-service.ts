@@ -1,10 +1,13 @@
-import { autoinject, TemplatingEngine, Controller } from "aurelia-framework";
+import { autoinject, TemplatingEngine, Controller, ViewSlot, View, Container, CompositionEngine } from "aurelia-framework";
+import { Demo } from "demo";
 
 @autoinject
 export class IonicService {
   private _cache = {};
 
   constructor(
+    private container: Container,
+    private compositionEngine: CompositionEngine,
     private templatingEngine: TemplatingEngine
   ) {}
 
@@ -30,6 +33,26 @@ export class IonicService {
     });
 
     return component;
+  }
+  async createView(viewModel: any, bindingContext: any, model?: any): Promise<HTMLElement> {
+    const r = await this.compositionEngine
+      .ensureViewModel({
+        container: this.container,
+        bindingContext: bindingContext,
+        model: model,
+        viewModel: viewModel,
+        viewResources: null,
+        viewSlot: this.createNoopViewSlot()
+      });
+
+    const controllerOrView = await this.compositionEngine.compose(r);
+    const div = document.createElement("div");
+
+    const viewSlot = new ViewSlot(div, true);
+    viewSlot.attached();
+    await viewSlot.add((<Controller>controllerOrView).view || <View>controllerOrView);
+    
+    return div;
   }
 
   get actionSheetController(): HTMLIonActionSheetControllerElement {
@@ -57,6 +80,27 @@ export class IonicService {
     return this.getFromCache("ion-toast-controller");
   }
 
+  private createNoopViewSlot() {
+    const noopViewSlot: ViewSlot = {
+      animateView() { },
+      add() { },
+      insert() { },
+      move() { },
+      remove() { return {} as any; },
+      removeAt() { return {} as any; },
+      removeMany() { },
+      removeAll() { },
+      projectTo() { },
+      bind() { },
+      attached() { },
+      detached() { },
+      unbind() { },
+      transformChildNodesIntoView() { }
+    };
+    (noopViewSlot as any).children = [];
+    
+    return noopViewSlot;
+  }
   private getFromCache(tagName: string) {
     if (!this._cache[tagName]) {
       let el = document.querySelector(tagName);

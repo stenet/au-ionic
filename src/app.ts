@@ -1,12 +1,12 @@
-import { autoinject, TemplatingEngine } from "aurelia-framework";
+import { autoinject, CompositionEngine, Container } from "aurelia-framework";
 import { IonicService } from "ionic-bridge/ionic-service";
+import { Demo } from "demo";
 
 @autoinject
 export class App {
   constructor(
     private element: Element,
-    private ionicService: IonicService
-  ) { 
+    private ionicService: IonicService  ) { 
     this.onResetValuesClick();
   }
 
@@ -98,17 +98,32 @@ export class App {
     });
     return await loading.present();
   }
-  async onModalClick(selector: string) {
+  async onModalClick(selector: string)
+  async onModalClick(viewModel: any) {
     const modalController = this.ionicService.modalController;
     await modalController.componentOnReady();
 
-    const template = <HTMLTemplateElement>document.querySelector(selector);
-    if (!template) {
-      return;
-    }
+    let component;
 
+    if (typeof viewModel === "string") {
+      const template = <HTMLTemplateElement>document.querySelector(viewModel);
+      if (!template) {
+        return;
+      }
+
+      component = this.ionicService.createComponent(
+        this.element,
+        template
+      );
+    } else {
+      component = await this.ionicService.createView(
+        viewModel,
+        this
+      );
+    }
+    
     const modal = await modalController.create({
-      component: this.ionicService.createComponent(this.element, template)
+      component: component
     });
 
     await modal.present();
