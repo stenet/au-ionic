@@ -1,56 +1,71 @@
-import { autoinject } from "aurelia-framework";
+import { autoinject, TemplatingEngine } from "aurelia-framework";
+import { IonicService } from "ionic-bridge/ionic-service";
 
 @autoinject
 export class App {
-  constructor() { }
+  constructor(
+    private element: Element,
+    private ionicService: IonicService
+  ) { 
+    this.onResetValuesClick();
+  }
 
-  value = "ABC";
+  inputValue;
+  dateTimeValue;
+  textareaValue;
+  checkboxChecked;
+  rangeValue;
+  range2Value;
+  selectValue;
+  toogleValue;
 
-  async onButtonClick() {
-    this.value = "CBA";
+  onResetValuesClick() {
+    this.inputValue = "ABC";
+    this.dateTimeValue = "2019-03-01";
+    this.textareaValue = "long text";
+    this.checkboxChecked = true;
+    this.rangeValue = 50;
+    this.range2Value = {
+      lower: 10,
+      upper: 50
+    };
+    this.selectValue = null;
+    this.toogleValue = true;
+  }
 
-    const alertController: HTMLIonAlertControllerElement = document.querySelector("ion-alert-controller");
+  async onActionSheetClick() {
+    const actionSheetController = this.ionicService.actionSheetController;
+    await actionSheetController.componentOnReady();
+
+    const actionSheet = await actionSheetController.create({
+      header: "Header",
+      buttons: [
+        {
+          text: "Button 1",
+          handler: () => {
+            console.log("Button 1 clicked")
+          }
+        },
+        {
+          text: "Button 2",
+          handler: () => {
+            console.log("Button 2 clicked")
+          }
+        }
+      ]
+    });
+
+    await actionSheet.present();
+  }
+  async onAlertClick() {
+    const alertController = this.ionicService.alertController;
     await alertController.componentOnReady();
-    
+
     const alert = await alertController.create({
       header: "Prompt!",
       inputs: [
         {
-          placeholder: "Placeholder 1"
-        },
-        {
-          name: "name2",
-          id: "name2-id",
-          value: "hello",
-          placeholder: "Placeholder 2"
-        },
-        {
-          name: "name3",
-          value: "http://ionicframework.com",
-          type: "url",
-          placeholder: "Favorite site ever"
-        },
-        // input date with min & max
-        {
-          name: "name4",
-          type: "date",
-          min: "2017-03-01",
-          max: "2018-01-12"
-        },
-        // input date without min nor max
-        {
-          name: "name5",
-          type: "date"
-        },
-        {
-          name: "name6",
-          type: "number",
-          min: -5,
-          max: 10
-        },
-        {
-          name: "name7",
-          type: "number"
+          placeholder: "Placeholder"
         }
       ],
       buttons: [
@@ -70,5 +85,88 @@ export class App {
       ],
     });
     await alert.present();
+  }
+  async onLoadingClick() {
+    const loadingController = this.ionicService.loadingController;
+    await loadingController.componentOnReady();
+
+    const loading = await loadingController.create({
+      spinner: null,
+      duration: 5000,
+      message: "Please wait...",
+      translucent: true
+    });
+    return await loading.present();
+  }
+  async onModalClick(selector: string) {
+    const modalController = this.ionicService.modalController;
+    await modalController.componentOnReady();
+
+    const template = <HTMLTemplateElement>document.querySelector(selector);
+    if (!template) {
+      return;
+    }
+
+    const modal = await modalController.create({
+      component: this.ionicService.createComponent(this.element, template)
+    });
+
+    await modal.present();
+  }
+  async onPopoverClick(event: Event, selector: string) {
+    const popoverController = this.ionicService.popoverController;
+    await popoverController.componentOnReady();
+
+    const template = <HTMLTemplateElement>document.querySelector(selector);
+    if (!template) {
+      return;
+    }
+
+    const modal = await popoverController.create({
+      component: this.ionicService.createComponent(this.element, template),
+      event: event
+    });
+
+    await modal.present();
+  }
+  async onPickerClick() {
+    const pickerController = this.ionicService.pickerController;
+    await pickerController.componentOnReady();
+
+    const picker = await pickerController.create({
+      columns: [
+        {
+          name: "Column1",
+          options: [{ text: "A" }, { text: "B" }]
+        },
+      ],
+      buttons: [
+        {
+          text: "Ok",
+          handler: () => {
+            console.log("Confirm Ok")
+          }
+        }
+      ]
+    });
+
+    await picker.present();
+  }
+  async onToastClick() {
+    const toastController = this.ionicService.toastController;
+    await toastController.componentOnReady();
+
+    const toast = await toastController.create({
+      duration: 3000,
+      message: "I'm a toast :-)"
+    });
+
+    await toast.present();
+  }
+
+  onModalInsideButtonClick() {
+    console.log("Modal Inside Click");
+
+    this.ionicService.modalController.dismiss();
   }
 }

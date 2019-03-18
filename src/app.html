@@ -1,14 +1,246 @@
 <template>
-  <ion-alert-controller></ion-alert-controller>
   <ion-app>
-    <ion-content>
-      <h1>Basic usage</h1>
-      <ion-button click.trigger="onButtonClick()">Click me</ion-button>
+    <ion-menu side="start">
+      <ion-header>
+        <ion-toolbar color="primary">
+          <ion-title>Start Menu</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-list>
+          <ion-item>Menu Item</ion-item>
+          <ion-item>Menu Item</ion-item>
+          <ion-item>Menu Item</ion-item>
+          <ion-item>Menu Item</ion-item>
+          <ion-item>Menu Item</ion-item>
+        </ion-list>
+      </ion-content>
+    </ion-menu>
 
-      <ion-item>
-        <ion-label>Value</ion-label>
-        <ion-input value.two-way="value"></ion-input>
-      </ion-item>
-    </ion-content>
+    <ion-page class="ion-page" main>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-menu-button menu="start"></ion-menu-button>
+          </ion-buttons>
+          <ion-title>Aurelia with Ionic v4</ion-title>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content padding>
+        <ion-button expand="block" click.trigger="onResetValuesClick()">Reset values</ion-button>
+
+        <ion-item>
+          <ion-label>Action sheet</ion-label>
+          <ion-button click.trigger="onActionSheetClick()">Action sheet</ion-button>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Alerts</ion-label>
+          <ion-button click.trigger="onAlertClick()">Alert</ion-button>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Picker</ion-label>
+          <ion-button click.trigger="onPickerClick()">Picker</ion-button>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Modal</ion-label>
+          <ion-button click.trigger="onModalClick('#modal')">Modal</ion-button>
+          <template id="modal">
+            <ion-header>
+              <ion-toolbar>
+                <ion-title>Super Modal</ion-title>
+              </ion-toolbar>
+            </ion-header>
+            <ion-content>
+              <ion-button click.trigger="onModalInsideButtonClick()">Test Button</ion-button>
+            </ion-content>
+          </template>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Popover</ion-label>
+          <ion-button click.trigger="onPopoverClick($event, '#popover')">Popover</ion-button>
+          <template id="popover">
+            <div padding>
+              Some content
+            </div>
+          </template>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Loading</ion-label>
+          <ion-button click.trigger="onLoadingClick()">Loading</ion-button>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Toast</ion-label>
+          <ion-button click.trigger="onToastClick()">Toast</ion-button>
+        </ion-item>
+
+        <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+          <ion-fab-button>
+            <ion-icon name="share"></ion-icon>
+          </ion-fab-button>
+          <ion-fab-list side="top">
+            <ion-fab-button>
+              <ion-icon name="logo-vimeo"></ion-icon>
+            </ion-fab-button>
+            <ion-fab-button>
+              <ion-icon name="logo-facebook"></ion-icon>
+            </ion-fab-button>
+            <ion-fab-button>
+              <ion-icon name="logo-instagram"></ion-icon>
+            </ion-fab-button>
+            <ion-fab-button>
+              <ion-icon name="logo-twitter"></ion-icon>
+            </ion-fab-button>
+          </ion-fab-list>
+        </ion-fab>
+
+        <ion-list>
+          <ion-list-header>
+            <ion-label>Inputs</ion-label>
+          </ion-list-header>
+
+          <ion-item>
+            <ion-label>Input</ion-label>
+            <ion-input value.two-way="inputValue"></ion-input>
+          </ion-item>
+          <ion-item>${inputValue}</ion-item>
+
+          <ion-item>
+            <ion-label>Date</ion-label>
+            <ion-datetime display-format="DD.MM.YYYY" value.two-way="dateTimeValue"></ion-datetime>
+          </ion-item>
+          <ion-item>${dateTimeValue}</ion-item>
+
+          <ion-item>
+            <ion-label>Textarea</ion-label>
+            <ion-textarea value.two-way="textareaValue"></ion-textarea>
+          </ion-item>
+          <ion-item>
+            ${textareaValue}
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Checkbox</ion-label>
+            <ion-checkbox checked.two-way="checkboxChecked"></ion-checkbox>
+          </ion-item>
+          <ion-item>
+            ${checkboxChecked}
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Range</ion-label>
+            <ion-range value.two-way="rangeValue"></ion-range>
+          </ion-item>
+          <ion-item>
+            ${rangeValue}
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Range 2</ion-label>
+            <ion-range value.two-way="range2Value" dual-knobs="true">
+            </ion-range>
+          </ion-item>
+          <ion-item>
+            ${range2Value.lower} - ${range2Value.upper}
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Select</ion-label>
+            <ion-select value.two-way="selectValue" ok-text="Okay" cancel-text="Dismiss">
+              <ion-select-option value="brown">Brown</ion-select-option>
+              <ion-select-option value="blonde">Blonde</ion-select-option>
+              <ion-select-option value="black">Black</ion-select-option>
+              <ion-select-option value="red">Red</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            ${selectValue}
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Toogle</ion-label>
+            <ion-toggle checked.two-way="toogleValue"></ion-toggle>
+          </ion-item>
+          <ion-item>
+            ${toogleValue}
+          </ion-item>
+        </ion-list>
+
+        <ion-list>
+          <ion-list-header>
+            <ion-label>Badges</ion-label>
+          </ion-list-header>
+
+          <ion-item>
+            <ion-label>Badge 1</ion-label>
+            <ion-badge>99</ion-badge>
+          </ion-item>
+
+          <ion-item>
+            <ion-badge slot="start">11</ion-badge>
+            <ion-label>Badge 2</ion-label>
+            <ion-badge slot="end">22</ion-badge>
+          </ion-item>
+        </ion-list>
+
+        <ion-list>
+          <ion-list-header>
+            <ion-label>Card</ion-label>
+          </ion-list-header>
+
+          <ion-item>
+            <ion-card>
+              <ion-card-header>
+                <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+                <ion-card-title>Card Title</ion-card-title>
+              </ion-card-header>
+
+              <ion-card-content>
+                Keep close to Nature's heart... and break clear away, once in awhile,
+                and climb a mountain or spend a week in the woods. Wash your spirit clean.
+              </ion-card-content>
+            </ion-card>
+          </ion-item>
+
+          <ion-item>
+            <ion-card>
+              <ion-card-header>
+                <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+                <ion-card-title>Card Title</ion-card-title>
+              </ion-card-header>
+
+              <ion-card-content>
+                Keep close to Nature's heart... and break clear away, once in awhile,
+                and climb a mountain or spend a week in the woods. Wash your spirit clean.
+              </ion-card-content>
+            </ion-card>
+          </ion-item>
+        </ion-list>
+
+        <ion-list>
+          <ion-list-header>
+            <ion-label>Chips</ion-label>
+          </ion-list-header>
+
+          <ion-item>
+            <ion-chip>
+              <ion-label>Default</ion-label>
+            </ion-chip>
+            <ion-chip>
+              <ion-icon name="pin"></ion-icon>
+              <ion-label>Default</ion-label>
+            </ion-chip>
+          </ion-item>
+        </ion-list>
+
+      </ion-content>
+    </ion-page>
   </ion-app>
+  <ion-menu-controller></ion-menu-controller>
 </template>
